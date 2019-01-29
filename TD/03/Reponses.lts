@@ -1,0 +1,32 @@
+/*****/
+/* 1 */
+/*****/
+
+const M = 3
+
+PLATEFORME(Cap=M) = PLATEFORME_PASSAGER[0][0],
+
+PLATEFORME_PASSAGER[att:0..Cap][ass:0..Cap] = 
+	(when (att < Cap) arrive -> PLATEFORME_PASSAGER[att+1][ass]
+	|when (ass < Cap && att > 0) assit-> PLATEFORME_PASSAGER[att-1][ass+1]
+	|when (ass == Cap) depart -> PLATEFORME_PASSAGER[att][0]).
+  
+VOITURE(Cap=M) = VOITURE_EMBARQUEMENT[0],
+
+VOITURE_EMBARQUEMENT[ass:0..Cap] =
+	(when (ass < Cap) assit -> VOITURE_EMBARQUEMENT[ass+1]
+	|when (ass == Cap) depart -> VOITURE_ROULE),
+
+VOITURE_ROULE = 
+	(roule -> VOITURE_ARRETE
+	|urgence -> STOP),
+
+VOITURE_ARRETE = 
+	(arrete -> VOITURE_VIDE
+	|urgence -> STOP),
+
+VOITURE_VIDE =
+	(vide -> VOITURE_EMBARQUEMENT[0]
+	|urgence -> STOP).
+
+||MONTAGNE_RUSSE = (PLATEFORME(M) || VOITURE(M)).
