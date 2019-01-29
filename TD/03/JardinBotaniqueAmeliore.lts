@@ -1,0 +1,32 @@
+const N = 4 
+range T = 0..N 
+set VarAlpha = { valeur.{ lit[T], ecrit[T], obtient, rend } }
+
+LOCK = ( obtient -> rend -> LOCK ).
+
+VAR      = VAR[0], 
+VAR[u:T] = ( lit[u] -> VAR[u] | ecrit[v:T] -> VAR[v] ).
+
+||LOCK_VAR = ( LOCK || VAR ).
+
+TOURNIQUET = ( ouvre -> FONCTION ),
+FONCTION   = ( arrive -> INCREMENTE 
+              | ferme -> TOURNIQUET ),
+INCREMENTE = ( valeur.obtient -> valeur.lit[x:T] -> valeur.ecrit[x+1]
+              -> valeur.rend -> FONCTION ) + VarAlpha.
+
+||JARDIN=( est:TOURNIQUET || ouest:TOURNIQUET
+         ||{est,ouest,affiche}::valeur:LOCK_VAR )
+         /{ ouvre/{ est, ouest }.ouvre,
+            ferme/{ est, ouest }.ferme }.
+
+TEST       = TEST[0], 
+TEST[v:T]  = ( when(v<N) { est.arrive, ouest.arrive } -> TEST[v+1]
+             | ferme -> CHECK[v] ),
+
+CHECK[v:T] = ( affiche.valeur.lit[u:T]
+              -> ( when(u==v) correct-> TEST[v]
+                 | when(u!=v) erreur -> ERROR ) )
+             + { affiche.VarAlpha }.
+
+||TEST_JARDIN = ( JARDIN || TEST ).
