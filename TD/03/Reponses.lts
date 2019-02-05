@@ -7,7 +7,7 @@ const M = 3
 PLATEFORME(Cap=M) = PLATEFORME_PASSAGER[0][0],
 
 PLATEFORME_PASSAGER[att:0..Cap][ass:0..Cap] = 
-	(when (att < Cap) arrive -> PLATEFORME_PASSAGER[att+1][ass]
+	(when (att + ass< Cap) arrive -> PLATEFORME_PASSAGER[att+1][ass]
 	|when (ass < Cap && att > 0) assit-> PLATEFORME_PASSAGER[att-1][ass+1]
 	|when (ass == Cap) depart -> PLATEFORME_PASSAGER[att][0]).
   
@@ -30,3 +30,11 @@ VOITURE_VIDE =
 	|urgence -> STOP).
 
 ||MONTAGNE_RUSSE = (PLATEFORME(M) || VOITURE(M)).
+
+/*****/
+/* 2 */
+/*****/
+
+/*a*/
+/* */
+
